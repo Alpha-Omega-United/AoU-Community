@@ -33,9 +33,8 @@ community AoU to expand and automate certain functions
 
 ---
 ## Socials:
--   [Itsoik.com](www.Itsoik.com)
--   [Twitch.tv/itsOik](www.twitch.tv/itsoik)
--   [Twitch.tv/AlphaOmegaUnited](www.twitch.tv/alphaomegaunited)
+-   [Twitch.tv/itsOik](https://www.twitch.tv/itsoik)
+-   [Twitch.tv/AlphaOmegaUnited](https://www.twitch.tv/alphaomegaunited)
 ---
 
 ## TO-DO:
