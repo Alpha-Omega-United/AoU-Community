@@ -2,6 +2,10 @@
 <!-- Author: ItsOiK -->
 <!-- Date: 10/07 - 2021 -->
 
+# Alpha Omega United
+####Functions for Alpha Omega United stream Community
+This is the start of the extra functionality for the Twitch/Discord
+community AoU to expand and automate certain functions
 
 
 ```
@@ -11,13 +15,7 @@
           ╚██╗     ╚════╝╚════╝    ██╔══██║██║   ██║██║   ██║    ╚════╝╚════╝     ██╔╝
            ╚██╗                    ██║  ██║╚██████╔╝╚██████╔╝                    ██╔╝
             ╚═╝                    ╚═╝  ╚═╝ ╚═════╝  ╚═════╝                     ╚═╝
-
-
 ```
-# Alpha Omega United
-####Functions for Alpha Omega United stream Community
-This is the start of the extra functionality for the Twitch/Discord
-community AoU to expand and automate certain functions
 
 
 
