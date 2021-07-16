@@ -19623,3 +19623,157 @@
 2021-07-16 06:09:05.766 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: matissetec
 2021-07-16 06:09:05.767 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: callowcreation
 2021-07-16 06:09:05.768 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: itsoik
+2021-07-16 06:23:28.074 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 06:23:28.079 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 06:23:28.080 | INFO     | bot.bot:__init__:42 - STARTING: AoU Community bot
+2021-07-16 06:23:28.082 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 06:23:28.092 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 06:23:28.211 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 06:23:29.256 | INFO     | bot.bot:event_ready:63 - STARTED: alphaomegaunited
+2021-07-16 06:23:29.259 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: alphaomegaunited
+2021-07-16 06:23:29.262 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: calviz_gaming
+2021-07-16 06:23:29.264 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: imolalola
+2021-07-16 06:23:29.265 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: matissetec
+2021-07-16 06:23:29.270 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: callowcreation
+2021-07-16 06:23:39.134 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 06:23:39.138 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 06:23:39.139 | INFO     | bot.bot:__init__:42 - STARTING: AoU Community bot
+2021-07-16 06:23:39.141 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 06:23:39.151 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 06:23:39.291 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 06:23:40.238 | INFO     | bot.bot:event_ready:63 - STARTED: alphaomegaunited
+2021-07-16 06:23:40.241 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: alphaomegaunited
+2021-07-16 06:23:40.243 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: calviz_gaming
+2021-07-16 06:23:40.244 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: imolalola
+2021-07-16 06:23:40.245 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: callowcreation
+2021-07-16 06:23:44.099 | INFO     | bot.bot:add_user_to_buffer_and_save:210 - itsoik added to file
+2021-07-16 06:23:54.351 | INFO     | bot.bot:add_user_to_buffer_and_save:210 - matissetec added to file
+2021-07-16 06:28:44.105 | WARNING  | bot.bot:restart_bot:223 - bot restarting
+2021-07-16 06:28:44.134 | DEBUG    | __main__:check_password:178 - Checking password
+2021-07-16 06:28:44.151 | DEBUG    | __main__:bot_get:105 - restart_bot
+2021-07-16 06:28:44.167 | DEBUG    | __main__:bot_get:106 - {}
+2021-07-16 06:28:44.183 | DEBUG    | __main__:bot_get:107 - None
+2021-07-16 06:28:46.033 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 06:28:46.038 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 06:28:46.039 | INFO     | bot.bot:__init__:42 - STARTING: AoU Community bot
+2021-07-16 06:28:46.042 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 06:28:46.053 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 06:28:46.180 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 06:28:47.258 | INFO     | bot.bot:event_ready:63 - STARTED: alphaomegaunited
+2021-07-16 06:28:47.259 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: alphaomegaunited
+2021-07-16 06:28:47.260 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: calviz_gaming
+2021-07-16 06:28:47.261 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: imolalola
+2021-07-16 06:28:47.262 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: callowcreation
+2021-07-16 06:28:47.262 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: itsoik
+2021-07-16 06:28:47.263 | DEBUG    | bot.bot:event_ready:66 - AoU-bot joined: matissetec
+2021-07-16 06:33:53.473 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 06:33:53.478 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 06:33:53.479 | INFO     | bot.bot:__init__:43 - STARTING: AoU Community bot
+2021-07-16 06:33:53.481 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 06:33:53.491 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 06:33:53.615 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 06:33:54.668 | INFO     | bot.bot:event_ready:64 - STARTED: alphaomegaunited
+2021-07-16 06:33:54.669 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: alphaomegaunited
+2021-07-16 06:33:54.670 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: calviz_gaming
+2021-07-16 06:33:54.671 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: imolalola
+2021-07-16 06:33:54.672 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: callowcreation
+2021-07-16 06:33:54.673 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: matissetec
+2021-07-16 06:34:01.192 | INFO     | bot.bot:add_user_to_buffer_and_save:211 - itsoik added to file
+2021-07-16 06:34:01.197 | DEBUG    | bot.bot:restart_bot:224 - timer was none
+2021-07-16 06:34:25.366 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 06:34:25.371 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 06:34:25.372 | INFO     | bot.bot:__init__:43 - STARTING: AoU Community bot
+2021-07-16 06:34:25.374 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 06:34:25.385 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 06:34:25.501 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 06:34:26.402 | INFO     | bot.bot:event_ready:64 - STARTED: alphaomegaunited
+2021-07-16 06:34:26.403 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: alphaomegaunited
+2021-07-16 06:34:26.404 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: calviz_gaming
+2021-07-16 06:34:39.500 | INFO     | bot.bot:add_user_to_buffer_and_save:211 - itsoik added to file
+2021-07-16 06:34:39.503 | DEBUG    | bot.bot:restart_bot:224 - timer was none
+2021-07-16 06:35:12.961 | DEBUG    | bot.bot:restart_bot:224 - timer was none
+2021-07-16 06:35:57.933 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 06:35:57.938 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 06:35:57.939 | INFO     | bot.bot:__init__:43 - STARTING: AoU Community bot
+2021-07-16 06:35:57.941 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 06:35:57.951 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 06:35:58.081 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 06:35:59.067 | INFO     | bot.bot:event_ready:64 - STARTED: alphaomegaunited
+2021-07-16 06:35:59.070 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: alphaomegaunited
+2021-07-16 06:35:59.071 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: calviz_gaming
+2021-07-16 06:35:59.073 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: itsoik
+2021-07-16 06:36:01.737 | DEBUG    | bot.bot:restart_bot:225 - timer was none
+2021-07-16 06:37:25.561 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 06:37:25.566 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 06:37:25.567 | INFO     | bot.bot:__init__:43 - STARTING: AoU Community bot
+2021-07-16 06:37:25.570 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 06:37:25.579 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 06:37:25.700 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 06:37:26.670 | INFO     | bot.bot:event_ready:64 - STARTED: alphaomegaunited
+2021-07-16 06:37:26.673 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: alphaomegaunited
+2021-07-16 06:37:26.675 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: calviz_gaming
+2021-07-16 06:37:26.676 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: itsoik
+2021-07-16 06:37:59.151 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 06:37:59.156 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 06:37:59.157 | INFO     | bot.bot:__init__:43 - STARTING: AoU Community bot
+2021-07-16 06:37:59.159 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 06:37:59.168 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 06:37:59.293 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 06:38:00.210 | INFO     | bot.bot:event_ready:64 - STARTED: alphaomegaunited
+2021-07-16 06:38:00.212 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: alphaomegaunited
+2021-07-16 06:38:00.213 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: calviz_gaming
+2021-07-16 06:38:00.214 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: itsoik
+2021-07-16 06:38:03.007 | WARNING  | bot.bot:restart_bot:226 - bot restarting
+2021-07-16 06:38:03.037 | DEBUG    | __main__:check_password:178 - Checking password
+2021-07-16 06:38:03.054 | DEBUG    | __main__:bot_get:105 - restart_bot
+2021-07-16 06:38:03.070 | DEBUG    | __main__:bot_get:106 - {}
+2021-07-16 06:38:03.086 | DEBUG    | __main__:bot_get:107 - None
+2021-07-16 06:38:05.031 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 06:38:05.035 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 06:38:05.036 | INFO     | bot.bot:__init__:43 - STARTING: AoU Community bot
+2021-07-16 06:38:05.038 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 06:38:05.048 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 06:38:05.162 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 06:38:06.086 | INFO     | bot.bot:event_ready:64 - STARTED: alphaomegaunited
+2021-07-16 06:38:06.088 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: alphaomegaunited
+2021-07-16 06:38:06.090 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: calviz_gaming
+2021-07-16 06:38:06.092 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: itsoik
+2021-07-16 06:38:44.880 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 06:38:44.885 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 06:38:44.885 | INFO     | bot.bot:__init__:43 - STARTING: AoU Community bot
+2021-07-16 06:38:44.887 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 06:38:44.897 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 06:38:45.022 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 06:38:45.986 | INFO     | bot.bot:event_ready:64 - STARTED: alphaomegaunited
+2021-07-16 06:38:45.989 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: alphaomegaunited
+2021-07-16 06:38:45.991 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: calviz_gaming
+2021-07-16 06:38:45.993 | DEBUG    | bot.bot:event_ready:67 - AoU-bot joined: itsoik
+2021-07-16 06:39:43.888 | INFO     | bot.bot:add_bot_to_buffer_and_save:219 - itsoik added oik_bot to file
+2021-07-16 07:45:05.680 | INFO     | bot.bot:add_user_to_buffer_and_save:212 - pr0gram3d_baby added to file
+2021-07-16 07:50:05.685 | WARNING  | bot.bot:restart_bot:226 - bot restarting
+2021-07-16 07:50:05.715 | DEBUG    | __main__:check_password:178 - Checking password
+2021-07-16 07:50:05.732 | DEBUG    | __main__:bot_get:105 - restart_bot
+2021-07-16 07:50:05.744 | DEBUG    | __main__:bot_get:106 - {}
+2021-07-16 07:50:05.760 | DEBUG    | __main__:bot_get:107 - None
+2021-07-16 07:50:07.534 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 07:50:07.538 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 07:50:07.539 | INFO     | bot.bot:__init__:42 - STARTING: AoU Community bot
+2021-07-16 07:50:07.541 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 07:50:07.550 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 07:50:07.680 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 07:50:08.743 | INFO     | bot.bot:event_ready:62 - STARTED: alphaomegaunited
+2021-07-16 07:50:08.744 | DEBUG    | bot.bot:event_ready:65 - AoU-bot joined: alphaomegaunited
+2021-07-16 07:50:08.746 | DEBUG    | bot.bot:event_ready:65 - AoU-bot joined: calviz_gaming
+2021-07-16 07:50:08.748 | DEBUG    | bot.bot:event_ready:65 - AoU-bot joined: itsoik
+2021-07-16 07:50:08.749 | DEBUG    | bot.bot:event_ready:65 - AoU-bot joined: pr0gram3d_baby
+2021-07-16 07:56:28.456 | INFO     | __main__:<module>:52 - STARTING: Logging Process
+2021-07-16 07:56:28.461 | INFO     | __main__:<module>:191 - STARTING: Threaded Modules
+2021-07-16 07:56:28.462 | INFO     | bot.bot:__init__:42 - STARTING: AoU Community bot
+2021-07-16 07:56:28.464 | INFO     | bot.bot_functions.point_system:run:35 - STARTING: Leaderboard Point System
+2021-07-16 07:56:28.474 | INFO     | __main__:start_bot:74 - STARTING: Bot Thread
+2021-07-16 07:56:28.608 | INFO     | __main__:<module>:193 - STARTING: API server Loop
+2021-07-16 07:56:29.589 | INFO     | bot.bot:event_ready:62 - STARTED: alphaomegaunited
+2021-07-16 07:56:29.590 | DEBUG    | bot.bot:event_ready:65 - AoU-bot joined: alphaomegaunited
+2021-07-16 07:56:29.591 | DEBUG    | bot.bot:event_ready:65 - AoU-bot joined: calviz_gaming
+2021-07-16 07:56:29.591 | DEBUG    | bot.bot:event_ready:65 - AoU-bot joined: itsoik
+2021-07-16 07:56:29.592 | DEBUG    | bot.bot:event_ready:65 - AoU-bot joined: pr0gram3d_baby

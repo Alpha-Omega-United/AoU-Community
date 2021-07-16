@@ -1,3 +1,8 @@
+<!-- Readme.md -->
+<!-- Author: ItsOiK -->
+<!-- Date: 10/07 - 2021 -->
+
+
 # Alpha Omega United
 ####Functions for Alpha Omega United stream Community
 This is the start of the extra functionality for the Twitch/Discord
@@ -45,12 +50,14 @@ community AoU to expand and automate certain functions
 
 ### BOT:
 #### Twitch:
-- [ ] Create TwitchBot
-  - [ ] Add commands:
-    - [ ] !register (to make bot join their channel chat)
-    - [ ] !bot <username> (to allow for extra features)
-  - [ ] Make and host bot
-  - [ ] monitor chatlist ever x minute of registered Members
+- [x] Create TwitchBot  - 16/07 - 21
+  - [x] Add commands:   - 16/07 - 21
+    - [x] !register   - 16/07 - 21
+    - [x] !bot <username>   - 16/07 - 21
+    - [x] !remove  - 16/07 - 21
+    - [x] !restart   - 16/07 - 21
+  - [ ] Make and host bot  - 16/07 - 21
+  - [ ] monitor chatlist ever x minute of registered Members  - 16/07 - 21
     - [ ] have Discord bot post confirmation to confirm membership in AoU
   - [ ] monitor for raids (extra feature)
   - [ ] send data to discord
@@ -75,35 +82,6 @@ bits and bobs
 
 ---
 # Notes:
-AoU is great
-## AOU:
-
-
-- [ ] - BOT:
-    - [ ] - discord bot
-        - [ ] sign up for monitoring via command
-        - [ ] posting to discord/leaderboard
-    - [ ] twitch chatbot:
-        - [ ] make twitch account
-            - [ ] host bot:
-            - [ ] commands:
-                - [ ] !register -> reply: success/fail + "dont forget to do !bot to add your custom bot
-                - [ ] !bot <botname>
-            - [ ] monitor chatlist for lurkers/watchtime
-            - [ ] monitor for raids
-            - [ ] send data to discord
-    - [ ] streamElements:
-        - [ ] custom alert script
-            - [ ] goes to "public leaderboard" and see if user who subbed/bit is on it
-
-- [ ] Social Media API's
-    - [ ] automation (posting clips e.g from dedicated disc channel)
-        - [ ] twitter
-        - [ ] facebook
-        - [ ] instagram
-        - [ ] tiktok
-
-
 
 
 discord bot that shows whos live in a dedicated channel

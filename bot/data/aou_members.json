@@ -25,27 +25,18 @@
 			],
 			"points": 0
 		},
-		"imolalola": {
-			"bots": [
-				"alphaomegaunited",
-				"oik_bot",
-				"streamelements",
-				"streamlabs"
-			],
-			"points": 70
-		},
-		"matissetec": [
-			"alphaomegaunited"
-		],
-		"callowcreation": [
-			"alphaomegaunited"
-		],
 		"itsoik": {
 			"bots": [
 				"alphaomegaunited",
 				"oik_bot"
 			],
-			"Points": 0
+			"points": 0
+		},
+		"pr0gram3d_baby": {
+			"bots": [
+				"alphaomegaunited"
+			],
+			"points": 0
 		}
 	}
 }

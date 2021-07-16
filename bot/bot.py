@@ -28,7 +28,6 @@ CLIENT_SECRET = ALL_AUTH["CLIENT_SECRET"]
 ACCESS_TOKEN = ALL_AUTH["ACCESS_TOKEN"]
 TMI = ALL_AUTH["TMI"]
 BOT_NICK = ALL_AUTH["BOT_NICK"]
-
 AOU_API = "http://192.168.31.54:8888/api"
 
 
@@ -38,6 +37,7 @@ def time_now():
 
 class Bot(commands.Bot):
     def __init__(self):
+        self.restart_timer = None
         self.now = dt.datetime.now().strftime("%H%M%S")
         logger.info("STARTING: AoU Community bot")
         self.JSON_BUFFER = {}
@@ -48,7 +48,6 @@ class Bot(commands.Bot):
         self.ignore_commands = ["test"]
         self.point_system = PointSystem()
         self.last_updated_chatters = int(dt.datetime.now().strftime("%H%M%S"))-25
-
         super().__init__(
             irc_token=TMI,
             client_id=CLIENT_ID,
@@ -159,7 +158,8 @@ class Bot(commands.Bot):
     @commands.command(name="restart", aliases=test_aliases)
     async def restart(self, ctx):
         if ctx.author.name in self.MODERATORS:
-            await self.restart_bot()
+            await ctx.send("Restarting in now")
+            await self.restart_bot(True)
 
 #! ------------------------------- CHATBOT #HELP LIST ------------------------------------- #
     @ commands.command(name="help")
@@ -208,8 +208,8 @@ class Bot(commands.Bot):
 
     def add_user_to_buffer_and_save(self, user):
         logger.info(f"{user} added to file")
-        new_data = {"bots": ["alphaomegaunited"],
-                    "Points": 0}
+        new_data = {"bots": ["alphaomegaunited", "streamelements", "streamlabs", "nightbot", "moobot", "deepbot", "wizebot"],
+                    "points": 0}
         self.JSON_BUFFER["users"][user.lower()] = new_data
         self.save_json("bot/data/aou_members.json")
 
@@ -218,8 +218,9 @@ class Bot(commands.Bot):
         self.JSON_BUFFER["users"][user]["bots"].append(bot.lower())
         self.save_json("bot/data/aou_members.json")
 
-    async def restart_bot(self):
-        await asyncio.sleep(300)
+    async def restart_bot(self, now=False):
+        if not now:
+            await asyncio.sleep(300)
         logger.warning("bot restarting")
         await self.get_api_call("restart_bot")
 
