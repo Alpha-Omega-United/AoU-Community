@@ -1,0 +1,51 @@
+{
+	"MODERATORS": [
+		"itsoik",
+		"theserbian_",
+		"ziddi_",
+		"chaosxrising",
+		"calviz_gaming",
+		"kinwcwest",
+		"lilvicky86",
+		"deliriouszendera",
+		"notariustv",
+		"shurumo",
+		"vaboofficial"
+	],
+	"users": {
+		"alphaomegaunited": {
+			"bots": [
+				"alphaomegaunited"
+			],
+			"points": 105
+		},
+		"calviz_gaming": {
+			"bots": [
+				"calviz_gaming"
+			],
+			"points": 0
+		},
+		"imolalola": {
+			"bots": [
+				"alphaomegaunited",
+				"oik_bot",
+				"streamelements",
+				"streamlabs"
+			],
+			"points": 70
+		},
+		"matissetec": [
+			"alphaomegaunited"
+		],
+		"callowcreation": [
+			"alphaomegaunited"
+		],
+		"itsoik": {
+			"bots": [
+				"alphaomegaunited",
+				"oik_bot"
+			],
+			"Points": 0
+		}
+	}
+}
