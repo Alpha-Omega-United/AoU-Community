@@ -20,7 +20,7 @@ from random import choice
 import ctypes
 
 from OAUTH.oauth import ALL_AUTH
-from bot.bot_functions.point_system import PointSystem
+from bot.extra.points import PointSystem
 
 
 CLIENT_ID = ALL_AUTH["CLIENT_ID"]
@@ -47,7 +47,6 @@ class Bot(commands.Bot):
         self.prefix = "!"
         self.ignore_commands = ["test"]
         self.point_system = PointSystem()
-        self.last_updated_chatters = int(dt.datetime.now().strftime("%H%M%S"))-25
         super().__init__(
             irc_token=TMI,
             client_id=CLIENT_ID,
@@ -61,8 +60,8 @@ class Bot(commands.Bot):
         # Called once the bot goes online
         logger.info(f"STARTED: {BOT_NICK}")
         ws = self._ws  # this is only needed to send messages within event_ready
-        for channel in self.CHANNELS:
-            logger.debug(f"AoU-bot joined: {channel}")
+        for index, channel in enumerate(self.CHANNELS):
+            logger.debug(f"AoU-bot joined #{index + 1}/{len(self.CHANNELS)}: {channel}")
         await ws.send_privmsg("alphaomegaunited", f"/me bot has landed!")
         # await ws.send_privmsg("itsoik", f"/me bot has landed!")
 
@@ -116,7 +115,8 @@ class Bot(commands.Bot):
 #! ------------------------------------ REGULAR ------------------------------------------ #
     @commands.command(name="test", aliases=test_aliases)
     async def test(self, ctx):
-        await ctx.send("tested")
+        if ctx.author.name in self.CHANNELS:
+            await ctx.send("tested")
 
     @commands.command(name="signup", aliases=signup_aliases)
     async def signup(self, ctx):
@@ -132,7 +132,7 @@ class Bot(commands.Bot):
     @commands.command(name="bot", aliases=["bots"])
     async def bot(self, ctx):
         if "!bots" in ctx.content:
-            bots = ", ".join(self.JSON_BUFFER["users"][ctx.author.name]["bots"])
+            bots = ", ".join(self.JSON_BUFFER["bots"])
             await ctx.send(f"You have registered these bots: {bots}")
             return
         user = ctx.author.name
@@ -196,7 +196,7 @@ class Bot(commands.Bot):
 #! ----------------------------------- SOMETHING ----------------------------------------- #
     def check_if_bot_in_buffer(self, user, bot):
         if self.check_if_user_in_buffer(user):
-            for bot_in_buffer in self.JSON_BUFFER["users"][user]["bots"]:
+            for bot_in_buffer in self.JSON_BUFFER["bots"]:
                 if bot == bot_in_buffer:
                     return True
         return False
@@ -207,6 +207,7 @@ class Bot(commands.Bot):
         return False
 
     def add_user_to_buffer_and_save(self, user):
+        """add user to buffer and saves"""
         logger.info(f"{user} added to file")
         new_data = {"bots": ["alphaomegaunited", "streamelements", "streamlabs", "nightbot", "moobot", "deepbot", "wizebot"],
                     "points": 0}
@@ -215,7 +216,7 @@ class Bot(commands.Bot):
 
     def add_bot_to_buffer_and_save(self, user, bot):
         logger.info(f"{user} added {bot} to file")
-        self.JSON_BUFFER["users"][user]["bots"].append(bot.lower())
+        self.JSON_BUFFER["bots"].append(bot.lower())
         self.save_json("bot/data/aou_members.json")
 
     async def restart_bot(self, now=False):

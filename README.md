@@ -64,10 +64,11 @@ community AoU to expand and automate certain functions
     - [x] !bot <username>   - 16/07 - 21
     - [x] !remove  - 16/07 - 21
     - [x] !restart   - 16/07 - 21
-  - [ ] Make and host bot  - 16/07 - 21
-  - [ ] monitor chatlist ever x minute of registered Members  - 16/07 - 21
+  - [ ] update google sheet at TIMEINTERVAL
+  - [x] Make and host bot  - 16/07 - 21
+  - [x] monitor chatlist ever x minute of registered Members  - 16/07 - 21
     - [ ] have Discord bot post confirmation to confirm membership in AoU
-  - [ ] monitor for raids (extra feature)
+  - [ ] monitor for raids (extra feature, needs user's bots)
   - [ ] send data to discord
 #### Discord:
 - [ ] Create DiscordBot
@@ -78,7 +79,7 @@ community AoU to expand and automate certain functions
 - [ ] Custom alert for AoU Members (when bits/sub(/tips))
 - [ ] Auto ShoutOut
 ### Google:
-- [ ] Host Leadersboards for public/AoU-mod's access
+- [ ] Host Leaderboards for public/AoU-mod's access
 ### Example:
 #### Example:
 ##### Example:
