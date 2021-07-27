@@ -2,7 +2,7 @@
 # Author: ItsOiK
 # Date: 15/07 - 2021
 
-import datetime as dt
+
 import requests
 import ast
 import json
@@ -13,47 +13,51 @@ from threading import Thread
 from loguru import logger
 
 
-def time_now():
-    return int(dt.datetime.now().strftime("%H%M%S"))
+from OAUTH.oauth import ALL_AUTH
+CLIENT_ID = ALL_AUTH["CLIENT_ID"]
+ACCESS_TOKEN = ALL_AUTH["ACCESS_TOKEN"]
 
 
-POINT_AMOUNT_LURK = 5
+POINT_AMOUNT_LURK = 10
 POINT_AMOUNT_HOST = 25
 POINT_AMOUNT_RAID = 50
 
-UPDATE_INTERVAL = 300
+UPDATE_INTERVAL = 600
 
 
 class PointSystem():
     def __init__(self):
         self.channel_list_to_check = []
         self.json_buffer = {}
-        self.last_updated_chatters = time_now()-295
+        self.last_updated_chatters = int(time.time())
         self.make_chatter_list()
         self.point_system_thread = Thread(target=self.run, daemon=True)
         self.point_system_thread.start()
+        self.last_updated_chatters = self.json_buffer["last_updated_chatters"]
 
     def run(self):
         logger.info("STARTING: Leaderboard Point System")
-        try:
-            self.last_updated_chatters = self.json_buffer["last_updated_chatters"]
-        except KeyError as e:
-            logger.error(e)
-        time_to_update = abs(abs(self.last_updated_chatters - time_now()) - UPDATE_INTERVAL)
-        logger.info(f"UPDATE in {math.floor(time_to_update / 60)}:{time_to_update % 60}")
+        time_to_next_update = abs(int(time.time()) - self.last_updated_chatters - UPDATE_INTERVAL)
+        logger.warning(f"update in: {math.floor(time_to_next_update / 60)}:{time_to_next_update % 60}")
         while True:
-            if self.last_updated_chatters - time_now() <= UPDATE_INTERVAL:
+            if abs(int(time.time()) - self.last_updated_chatters) >= UPDATE_INTERVAL:
                 logger.info("Updating Point System")
-                self.last_updated_chatters = time_now()
+                self.last_updated_chatters = int(time.time())
                 self.update()
                 time.sleep(UPDATE_INTERVAL)
 
-    def get_chatters_in_channel(self, channel):
-        endpoint = f"https://tmi.twitch.tv/group/user/{channel}/chatters"
-        response = requests.get(endpoint)
-        data = response.json()
-        return data
+#! -------------------------------- FILE HANDLING --------------------------------------- #
+    def save_json(self):
+        with open("bot/data/aou_members.json", "w") as file:
+            json.dump(self.json_buffer, file)
 
+    def load_json(self):
+        with open("bot/data/aou_members.json") as file:
+            content = file.read()
+            self.json_buffer = json.loads(content)
+            return self.json_buffer
+
+#! ------------------------------- USER MANAGEMENT -------------------------------------- #
     def update(self):
         for index, channel in enumerate(self.channel_list_to_check):
             viewers_on_channel = []
@@ -69,7 +73,7 @@ class PointSystem():
                                 self.json_buffer["users"][viewer]["points"] += POINT_AMOUNT_LURK
                 if len(viewers_on_channel) > 0:
                     logger.debug(f"updated points on: {viewers_on_channel} in {channel}")
-        self.json_buffer["last_updated_chatters"] = time_now()
+        self.json_buffer["last_updated_chatters"] = int(time.time())
         self.save_json()
         logger.info(f"Saved file")
 
@@ -79,16 +83,18 @@ class PointSystem():
         for (key, value) in self.json_buffer["users"].items():
             self.channel_list_to_check.append(key)
 
-    def load_json(self):
-        with open("bot/data/aou_members.json") as file:
-            content = file.read()
-            self.json_buffer = json.loads(content)
-            return self.json_buffer
+#! ---------------------------------- TWITCH API ----------------------------------------- #
+    def get_chatters_in_channel(self, channel):
+        endpoint = f"https://tmi.twitch.tv/group/user/{channel}/chatters"
+        response = requests.get(endpoint)
+        data = response.json()
+        return data
 
-#! ------------------------------------ SAVING ------------------------------------------- #
-    def save_json(self):
-        with open("bot/data/aou_members.json", "w") as file:
-            json.dump(self.json_buffer, file)
+    def check_stream_status(self, twitch_id: list):
+        endpoint = "https://api.twitch.tv/helix/streams/" + ",".join(twitch_id)
+        headers = {"Client-ID": CLIENT_ID}
+        params = {"stream_type": "live"}
+        response = requests.get(endpoint, headers=headers, params=params)
 
 
 # a = {

@@ -20,6 +20,7 @@ from random import choice
 import ctypes
 
 from OAUTH.oauth import ALL_AUTH
+
 from bot.extra.points import PointSystem
 
 
@@ -77,12 +78,14 @@ class Bot(commands.Bot):
         if ctx.author.name.lower() == BOT_NICK.lower():
             return
         await self.handle_commands(ctx)
-
+        # logger.error(ctx)
+        # logger.error(ctx.author)
+        # logger.error(ctx.content)
         # await ctx.channel.send(ctx.content) #! REPLIES TO ALL CHAT MESSAGES SENT WITH MESSAGE SENT
 
     #! ERROR HANDLING THINGY!
-    # async def event_command_error(self, ctx, error):
-    #     logger.error(f"event_command_error: Channel: {ctx.channel}; Command {error}")
+    async def event_command_error(self, ctx, error):
+        logger.error(f"event_command_error: Channel: {ctx.channel}; Command {error}")
 
 #! --------------------------------------------------------------------------------------- #
 #*                                    FILE HANDLER                                         #
@@ -115,13 +118,23 @@ class Bot(commands.Bot):
 #! ------------------------------------ REGULAR ------------------------------------------ #
     @commands.command(name="test", aliases=test_aliases)
     async def test(self, ctx):
-        if ctx.author.name in self.CHANNELS:
-            await ctx.send("tested")
+        # if ctx.author.name in self.CHANNELS:
+        await ctx.send("tested")
+
+    @commands.command(name="aou_discord", aliases=test_aliases)
+    async def aou_discord(self, ctx):
+        # if ctx.author.name in self.CHANNELS:
+        await ctx.send(""" Alpha Omega United is a Twitch/Discord Community.
+        We have community nights, game nights, tournaments and have some cool extra
+        features to come in the near future, wether you are a gamer, streamer or
+        anywhere in between this is a great place to meet likeminded people and
+        share some LUL 's :D Discord: https://discord.gg/P5qnher4kV """)
 
     @commands.command(name="signup", aliases=signup_aliases)
     async def signup(self, ctx):
         user = ctx.author.name
         if not self.check_if_user_in_buffer(user):
+            logger.debug(f"{user} to add")
             self.add_user_to_buffer_and_save(user)
             await ctx.send(f"{user}, Added to Watchlist, if you have custom bot name, type !bot followed by the name of your bot, example: !bot AoU_bot")
             await self.restart_bot()
@@ -206,10 +219,10 @@ class Bot(commands.Bot):
             return True
         return False
 
-    def add_user_to_buffer_and_save(self, user):
+    def add_user_to_buffer_and_save(self, user, twitch_id: int = 0):
         """add user to buffer and saves"""
         logger.info(f"{user} added to file")
-        new_data = {"bots": ["alphaomegaunited", "streamelements", "streamlabs", "nightbot", "moobot", "deepbot", "wizebot"],
+        new_data = {"twitch_id": twitch_id,
                     "points": 0}
         self.JSON_BUFFER["users"][user.lower()] = new_data
         self.save_json("bot/data/aou_members.json")
