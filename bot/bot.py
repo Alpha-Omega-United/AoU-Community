@@ -121,7 +121,7 @@ class Bot(commands.Bot):
         # if ctx.author.name in self.CHANNELS:
         await ctx.send("tested")
 
-    @commands.command(name="aou_discord", aliases=test_aliases)
+    @commands.command(name="aou_discord", aliases=aou_discord_aliases)
     async def aou_discord(self, ctx):
         # if ctx.author.name in self.CHANNELS:
         await ctx.send(""" Alpha Omega United is a Twitch/Discord Community.
