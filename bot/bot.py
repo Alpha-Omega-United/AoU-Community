@@ -2,7 +2,6 @@
 # Author: ItsOiK
 # Date: 15/07 - 2021
 
-from .command_aliases import *
 import socket
 import asyncio
 import requests
@@ -10,19 +9,17 @@ import re
 import time
 import datetime as dt
 import json
-
-from random import randint
 import threading
+import ctypes
+
 from loguru import logger
 from twitchio.ext import commands
 from random import choice
+from random import randint
 
-import ctypes
-
-from OAUTH.oauth import ALL_AUTH
-
+from .command_aliases import com_aliases
 from bot.extra.points import PointSystem
-
+from OAUTH.oauth import ALL_AUTH
 
 CLIENT_ID = ALL_AUTH["CLIENT_ID"]
 CLIENT_SECRET = ALL_AUTH["CLIENT_SECRET"]
@@ -53,21 +50,23 @@ class Bot(commands.Bot):
             client_id=CLIENT_ID,
             nick=BOT_NICK,
             prefix=self.prefix,
-            initial_channels=self.CHANNELS
+            # initial_channels=self.CHANNELS
+            initial_channels=[BOT_NICK]
         )
 
 #! -------------------------------- CHATBOT STARTING -------------------------------------- #
-    async def event_ready(self):
+    async def event_ready(self, event):
+        print(event)
         # Called once the bot goes online
         logger.info(f"STARTED: {BOT_NICK}")
         ws = self._ws  # this is only needed to send messages within event_ready
-        for index, channel in enumerate(self.CHANNELS):
-            logger.debug(f"AoU-bot joined #{index + 1}/{len(self.CHANNELS)}: {channel}")
+        # for index, channel in enumerate(self.CHANNELS):
+        #     logger.debug(f"AoU-bot joined #{index + 1}/{len(self.CHANNELS)}: {channel}")
         await ws.send_privmsg("alphaomegaunited", f"/me bot has landed!")
-        # await ws.send_privmsg("itsoik", f"/me bot has landed!")
+        # # await ws.send_privmsg("itsoik", f"/me bot has landed!")
 
     async def join_more_channels(self, channels):
-        await self._ws.join_channels(channels)
+        await self._ws.join_channels([channels])
 
 #! --------------------------------- CHATBOT EVENT --------------------------------------- #
     async def event_message(self, ctx):
@@ -102,7 +101,7 @@ class Bot(commands.Bot):
         with open(file_name, "w") as file:
             json.dump(self.JSON_BUFFER, file)
 
-#! ------------------------------------ ON-LOAD ------------------------------------------- #
+# ! ------------------------------------ ON-LOAD ------------------------------------------- #
     def load_channels_to_join(self):
         member_data = self.load_json("bot/data/aou_members.json")
         members_channels = []
@@ -113,15 +112,22 @@ class Bot(commands.Bot):
     def load_bots_to_watch(self):
         pass
 
-#! --------------------------------------------------------------------------------------- #
-#*                                       COMMANDS                                          #
-#! ------------------------------------ REGULAR ------------------------------------------ #
-    @commands.command(name="test", aliases=test_aliases)
+# ! --------------------------------------------------------------------------------------- #
+# *                                       COMMANDS                                          #
+# ! ------------------------------------ REGULAR ------------------------------------------ #
+    @commands.command(name="test", aliases=com_aliases["test_aliases"])
     async def test(self, ctx):
         # if ctx.author.name in self.CHANNELS:
         await ctx.send("tested")
 
-    @commands.command(name="aou_discord", aliases=aou_discord_aliases)
+    @commands.command(name="testing")
+    async def testing(self, ctx):
+        # if ctx.author.name in self.CHANNELS:
+        ws = self._ws
+        await self._ws.send(f'JOIN #itsoik\r\n')
+        await ctx.send("joined?")
+
+    @commands.command(name="aou_discord", aliases=com_aliases["aou_discord_aliases"])
     async def aou_discord(self, ctx):
         # if ctx.author.name in self.CHANNELS:
         await ctx.send(""" Alpha Omega United is a Twitch/Discord Community.
@@ -130,7 +136,7 @@ class Bot(commands.Bot):
         anywhere in between this is a great place to meet likeminded people and
         share some LUL 's :D Discord: https://discord.gg/P5qnher4kV """)
 
-    @commands.command(name="signup", aliases=signup_aliases)
+    @commands.command(name="signup", aliases=com_aliases["signup_aliases"])
     async def signup(self, ctx):
         user = ctx.author.name
         if not self.check_if_user_in_buffer(user):
@@ -142,7 +148,7 @@ class Bot(commands.Bot):
             await ctx.send(f"{user}, Already in watchlist, did you want to register your bot instead? type !bot followed by the name of your bot, example: !bot AoU_bot")
         await ctx.send(f"{user}, It may take up to 30minutes before the bot joins your channel.")
 
-    @commands.command(name="bot", aliases=["bots"])
+    @commands.command(name="bot", aliases=com_aliases["bot_aliases"])
     async def bot(self, ctx):
         if "!bots" in ctx.content:
             bots = ", ".join(self.JSON_BUFFER["bots"])
@@ -156,7 +162,7 @@ class Bot(commands.Bot):
             self.add_bot_to_buffer_and_save(ctx.author.name, bot)
             await ctx.send(f"{bot} Successfully added, you can add more bots if you have multiple, just repeat the command again, do '!bots' to see all the bots you have registered")
 
-    @commands.command(name="remove", aliases=test_aliases)
+    @commands.command(name="remove", aliases=com_aliases["remove_aliases"])
     async def remove(self, ctx):
         if ctx.author.name in self.MODERATORS:
             user_to_remove = ctx.content.split(" ")[1]
@@ -168,7 +174,7 @@ class Bot(commands.Bot):
         else:
             await ctx.send("You dont have permission to do that, contact a moderator on discord")
 
-    @commands.command(name="restart", aliases=test_aliases)
+    @commands.command(name="restart", aliases=com_aliases["restart_aliases"])
     async def restart(self, ctx):
         if ctx.author.name in self.MODERATORS:
             await ctx.send("Restarting in now")

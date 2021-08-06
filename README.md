@@ -47,6 +47,12 @@ community AoU to expand and automate certain functions
 ---
 
 ## TO-DO:
+---
+
+## BUGs:
+### - joining channels are broken? 20attempt pr 10sec
+---
+
 #### Social Media:
 - [ ] Create accounts:
   - [x] Twitch
