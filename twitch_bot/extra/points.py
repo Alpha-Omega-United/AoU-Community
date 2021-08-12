@@ -24,6 +24,9 @@ POINT_AMOUNT_RAID = 50
 
 UPDATE_INTERVAL = 600
 
+NUMBER_OF_CHANNELS_TO_REWARD_POINTS = 2
+
+UPDATED_USERS = {"default": None}
 
 class PointSystem():
     def __init__(self):
@@ -59,6 +62,7 @@ class PointSystem():
 
 #! ------------------------------- USER MANAGEMENT -------------------------------------- #
     def update(self):
+        UPDATED_USERS = {"default": None}
         for index, channel in enumerate(self.channel_list_to_check):
             viewers_on_channel = []
             # if channel != "alphaomegaunited":
@@ -68,9 +72,13 @@ class PointSystem():
                 if key != "broadcaster":
                     for viewer in value:
                         if viewer in self.json_buffer["users"].keys() and viewer != "alphaomegaunited":
-                            viewers_on_channel.append(viewer)
-                            self.json_buffer = self.load_json()
-                            self.json_buffer["users"][viewer]["points"] += POINT_AMOUNT_LURK
+                            if self.check_updated_user(viewer):
+                                viewers_on_channel.append(viewer)
+                                self.json_buffer = self.load_json()
+                                self.json_buffer["users"][viewer]["points"] += POINT_AMOUNT_LURK
+                            else:
+                                logger.warning(f"{viewer} already rewarded max")
+
             if len(viewers_on_channel) > 0:
                 logger.debug(f"updated points on: {viewers_on_channel} in {channel}")
         self.json_buffer["last_updated_chatters"] = int(time.time())
@@ -95,6 +103,26 @@ class PointSystem():
         headers = {"Client-ID": CLIENT_ID}
         params = {"stream_type": "live"}
         response = requests.get(endpoint, headers=headers, params=params)
+
+
+    def check_updated_user(self, user):
+        """checks if user has already been updated max number of times,
+        if returns True, means user has not passed limit
+        if returns False, means user has passed limit"""
+        if user.lower() not in UPDATED_USERS.keys():
+            UPDATED_USERS[user] = 1
+        else:
+            for (key, value) in UPDATED_USERS.items():
+                if key.lower() == user.lower():
+                    if value == NUMBER_OF_CHANNELS_TO_REWARD_POINTS:
+                        return False
+                    else:
+                        UPDATED_USERS[key] = value + 1
+        return True
+
+
+
+
 
 
 # a = {
