@@ -16604,3 +16604,23 @@
 2021-08-12 08:45:47.433 | INFO     | twitch_bot.extra.points:update:69 - checking channel #76/78: emmaslemma_
 2021-08-12 08:45:48.143 | INFO     | twitch_bot.extra.points:update:69 - checking channel #77/78: itzmonarky
 2021-08-12 08:45:48.852 | INFO     | twitch_bot.extra.points:update:86 - Saved file
+2021-08-12 08:55:48.954 | INFO     | twitch_bot.extra.points:run:47 - Updating Point System
+2021-08-12 08:55:48.955 | INFO     | twitch_bot.extra.points:update:69 - checking channel #0/78: alphaomegaunited
+2021-08-12 08:55:50.103 | INFO     | twitch_bot.extra.points:update:69 - checking channel #1/78: calviz_gaming
+2021-08-12 08:55:50.848 | INFO     | twitch_bot.extra.points:update:69 - checking channel #2/78: theserbian_
+2021-08-12 08:55:51.561 | INFO     | twitch_bot.extra.points:update:69 - checking channel #3/78: nexxerd
+2021-08-12 08:55:52.279 | INFO     | twitch_bot.extra.points:update:69 - checking channel #4/78: deliriouszendera
+2021-08-12 08:55:53.006 | INFO     | twitch_bot.extra.points:update:69 - checking channel #5/78: notariustv
+2021-08-12 08:55:53.716 | INFO     | twitch_bot.extra.points:update:69 - checking channel #6/78: ziddi_
+2021-08-12 08:55:54.445 | INFO     | twitch_bot.extra.points:update:69 - checking channel #7/78: nerdbroadcast
+2021-08-12 08:55:55.154 | INFO     | twitch_bot.extra.points:update:69 - checking channel #8/78: vangsviking
+2021-08-12 08:55:55.901 | INFO     | twitch_bot.extra.points:update:69 - checking channel #9/78: the_ripper_1
+2021-08-12 08:55:56.608 | INFO     | twitch_bot.extra.points:update:69 - checking channel #10/78: by_cato
+2021-08-12 08:55:57.316 | INFO     | twitch_bot.extra.points:update:69 - checking channel #11/78: lagxjsf
+2021-08-12 08:55:58.026 | INFO     | twitch_bot.extra.points:update:69 - checking channel #12/78: pixelexio
+2021-08-12 08:55:58.738 | INFO     | twitch_bot.extra.points:update:69 - checking channel #13/78: psynergi00
+2021-08-12 08:55:59.860 | INFO     | twitch_bot.extra.points:update:69 - checking channel #14/78: queen0ftheeast
+2021-08-12 08:56:00.570 | INFO     | twitch_bot.extra.points:update:69 - checking channel #15/78: sargentsnus
+2021-08-12 08:56:01.283 | INFO     | twitch_bot.extra.points:update:69 - checking channel #16/78: ti_reex
+2021-08-12 08:56:01.999 | INFO     | twitch_bot.extra.points:update:69 - checking channel #17/78: sebbie02
+2021-08-12 08:56:02.701 | INFO     | twitch_bot.extra.points:update:69 - checking channel #18/78: v11sion
