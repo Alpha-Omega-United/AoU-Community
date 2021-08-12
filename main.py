@@ -19,8 +19,8 @@ from loguru import logger
 from threading import Thread
 from decouple import config
 
-
-from bot.bot import Bot
+from twitch_bot.twitch_bot import Bot as TwitchBotImport
+# from discord_bot.discord_bot import Bot as DiscordBotImport
 
 
 AOU_API = "http://192.168.31.54:8888/api"
@@ -59,35 +59,48 @@ def time_now():
 #! --------------------------------------------------------------------------------------- #
 #*                                    THREADING                                            #
 #! ----------------------------------- SOMETHING ----------------------------------------- #
-class ThreadedModules():
+class TwitchBot():
     def __init__(self):
-        self.bot_module = Bot()
-        self.bot_process = multiprocessing.Process(target=self.bot_module.run, daemon=True)
-        self.start_bot()
+        self.twitch_bot_module = TwitchBotImport()
+        self.twitch_bot_process = multiprocessing.Process(target=self.twitch_bot_module.run, daemon=True)
+        self.start_twitch_bot()
 
-    def start_bot(self):
-        if self.bot_process.is_alive():
+    def start_twitch_bot(self):
+        if self.twitch_bot_process.is_alive():
             logger.error("is alive")
-            logger.error(self.bot_process)
-            self.bot_process.terminate()
-        self.bot_process = multiprocessing.Process(target=self.bot_module.run, daemon=True)
+            logger.error(self.twitch_bot_process)
+            self.twitch_bot_process.terminate()
+        self.twitch_bot_process = multiprocessing.Process(target=self.twitch_bot_module.run, daemon=True)
         logger.info("STARTING: Bot Thread")
-        self.bot_process.start()
+        self.twitch_bot_process.start()
 
-    def restart_bot(self):
+    def restart_twitch_bot(self):
         logger.warning("KILLING: Bot Thread")
-        self.bot_process.terminate()
+        self.twitch_bot_process.terminate()
         logger.info("Bot Thread Re-Starting")
         self.start_bot()
 
-    # def run(self):
-    #     logger.info("STARTING: Threadedmodules Run()")
-    #     while True:
-    #         if not self.bot_process.is_alive():
-    #             logger.warning("restarting Bot")
-    #             self.start_bot()
-    #         time.sleep(10)
-    #         logger.info("Still alive")
+
+class DiscordBot():
+    def __init__(self):
+        self.discord_bot_module = DiscordBotImport()
+        self.discord_bot_process = multiprocessing.Process(target=self.discord_bot_module.run, daemon=True)
+        self.start_discord_bot()
+
+    def start_discord_bot(self):
+        if self.discord_bot_process.is_alive():
+            logger.error("is alive")
+            logger.error(self.discord_bot_process)
+            self.discord_bot_process.terminate()
+        self.discord_bot_process = multiprocessing.Process(target=self.discord_bot_module.run, daemon=True)
+        logger.info("STARTING: Bot Thread")
+        self.discord_bot_process.start()
+
+    def restart_discord_bot(self):
+        logger.warning("KILLING: Bot Thread")
+        self.discord_bot_process.terminate()
+        logger.info("Bot Thread Re-Starting")
+        self.start_bot()
 
 
 #! --------------------------------------------------------------------------------------- #
@@ -112,12 +125,12 @@ async def bot_get(path, params, body):
         except Exception as e:
             logger.error(e)
         # try:
-        #     threaded_modules.restart_bot()
+        #     twitch_bot.restart_bot()
         # except Exception as e:
         #     logger.error(e)
         # return text("Bot restarted")
     if path == "get_channel_chatters":
-        result = await threaded_modules.bot_module.get_channel_chatters()
+        result = await twitch_bot.twitch_bot_module.get_channel_chatters()
         logger.warning(result)
         logger.warning("updated channel chatters")
         return json(result)
@@ -189,6 +202,7 @@ def check_password(request):
 
 if __name__ == '__main__':
     logger.info("STARTING: Threaded Modules")
-    threaded_modules = ThreadedModules()
+    twitch_bot = TwitchBot()
+    # discord_bot = DiscordBot()
     logger.info("STARTING: API server Loop")
     app.run(host="0.0.0.0", port="8888")
