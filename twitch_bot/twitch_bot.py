@@ -28,7 +28,6 @@ TMI = ALL_AUTH["TMI"]
 BOT_NICK = ALL_AUTH["BOT_NICK"]
 AOU_API = "http://192.168.31.54:8888/api"
 
-AOU_MEMBERS = "twitch_bot/data/aou_members.json"
 
 def time_now():
     return dt.datetime.now().strftime("%H:%M:%S")
@@ -100,7 +99,8 @@ class Bot(commands.Bot):
 
 # ! ------------------------------------ ON-LOAD ------------------------------------------- #
     def load_channels_to_join(self):
-        member_data = self.load_json(AOU_MEMBERS)
+        # //TODO HIT DB FOR LIST
+        # member_data = self.load_json(AOU_MEMBERS)
         members_channels = []
         for (key, value) in member_data["users"].items():
             members_channels.append(key)
@@ -160,7 +160,8 @@ class Bot(commands.Bot):
             if removed_user is None:
                 user_to_remove = removed_user
             await ctx.send(f"{user_to_remove} was removed from the watchlist")
-            self.save_json(AOU_MEMBERS)
+            # //TODO SOMETNiHG
+            # self.save_json(AOU_MEMBERS)
         else:
             await ctx.send("You dont have permission to do that, contact a moderator on discord")
 
@@ -221,12 +222,14 @@ class Bot(commands.Bot):
         new_data = {"twitch_id": twitch_id,
                     "points": 0}
         self.JSON_BUFFER["users"][user.lower()] = new_data
-        self.save_json(AOU_MEMBERS)
+        # TODO SOMETHING
+        # self.save_json(AOU_MEMBERS_)
 
     def add_bot_to_buffer_and_save(self, user, bot):
         logger.info(f"{user} added {bot} to file")
         self.JSON_BUFFER["bots"].append(bot.lower())
-        self.save_json(AOU_MEMBERS)
+        # TODO SOMETHING
+        # self.save_json(AOU_MEMBERS_)
 
     async def restart_bot(self, now=False):
         if not now:

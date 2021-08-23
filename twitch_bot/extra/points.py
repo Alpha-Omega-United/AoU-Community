@@ -120,11 +120,29 @@ class PointSystem():
                         UPDATED_USERS[key] = value + 1
         return True
 
+# database handler
 
 
+# def editOne():
+#     #need id
+#     pass
 
-
-
+# def deleteOne():
+#     pass
+# def deleteMany():
+#     pass
+# ADD
+# insertOne
+# EDIT
+# updateOne
+# DELETE
+# deleteOne
+# QUERYONE
+# findOne
+# QUERYMANY
+# findMany
+# QUERYGETALL
+# find
 # a = {
 # 	'_links': {
 # 	},
