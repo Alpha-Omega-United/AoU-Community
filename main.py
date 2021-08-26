@@ -26,9 +26,9 @@ from twitch_bot.twitch_bot import Bot as TwitchBotImport
 AOU_API = "http://192.168.31.54:8888/api"
 
 AUTH = "123"
-#! --------------------------------------------------------------------------------------- #
-#*                                       LOGGER                                            #
-#! ----------------------------------- SOMETHING ----------------------------------------- #
+#! ------------------------------------------------------------------- #
+#*                             LOGGER                                  #
+#! ------------------------- SOMETHING ------------------------------- #
 
 
 def should_rotate(message, file) -> bool:
@@ -56,6 +56,7 @@ def time_now():
     return int(dt.datetime.now().strftime("%H%M%S"))
 
 
+
 #! --------------------------------------------------------------------------------------- #
 #*                                    THREADING                                            #
 #! ----------------------------------- SOMETHING ----------------------------------------- #
@@ -77,28 +78,6 @@ class TwitchBot():
     def restart_twitch_bot(self):
         logger.warning("KILLING: Bot Thread")
         self.twitch_bot_process.terminate()
-        logger.info("Bot Thread Re-Starting")
-        self.start_bot()
-
-
-class DiscordBot():
-    def __init__(self):
-        self.discord_bot_module = DiscordBotImport()
-        self.discord_bot_process = multiprocessing.Process(target=self.discord_bot_module.run, daemon=True)
-        self.start_discord_bot()
-
-    def start_discord_bot(self):
-        if self.discord_bot_process.is_alive():
-            logger.error("is alive")
-            logger.error(self.discord_bot_process)
-            self.discord_bot_process.terminate()
-        self.discord_bot_process = multiprocessing.Process(target=self.discord_bot_module.run, daemon=True)
-        logger.info("STARTING: Bot Thread")
-        self.discord_bot_process.start()
-
-    def restart_discord_bot(self):
-        logger.warning("KILLING: Bot Thread")
-        self.discord_bot_process.terminate()
         logger.info("Bot Thread Re-Starting")
         self.start_bot()
 
