@@ -3,43 +3,38 @@
 # Date: 23/08 - 2021
 
 from loguru import logger
+from pprint import pprint
 
 from pymongo import MongoClient
 import pymongo
 
 from OAUTH.oauth import ALL_AUTH
 MONGO_DB_CONNECTION_URL = ALL_AUTH["MONGO_DB_CONNECTION_URL"]
+MONGO_DB_NAME = ALL_AUTH["MONGO_DB_NAME"]
+MONGO_DB_COLLECTION = ALL_AUTH["MONGO_DB_COLLECTION"]
 
 
-# TODO : grab list of members
-# TODO : loop every 5 min:
-# TODO : check each member's chatlist
-# TODO : reward members in other members chatlist
-# TODO :
+class AouDatabase():
+    def __init__(self) -> None:
+        logger.info("AoUDatabase: INIT")
+        self.client = MongoClient(MONGO_DB_CONNECTION_URL)
+        self.db = self.client[MONGO_DB_NAME]
+        self.collection = self.db[MONGO_DB_COLLECTION]
 
-
-def query_database(callbackQuery):
-    response = ""
-    try:
-        client = MongoClient(MONGO_DB_CONNECTION_URL)
-        client.connect()
-        databate = client.db("aou_members_list")
-        collection = databate.collection("members")
-        if callbackQuery["queryType"] == "find":
-            response = collection.find()
-            # pass
-        elif callbackQuery["queryType"] == "edit":
-            response = collection.edit()
-            # pass
-        elif callbackQuery["queryType"] == "delete":
-            response = collection.delete()
-            # pass
-        elif callbackQuery["queryType"] == "update_many":
-            response = collection.update_many()
-            # pass
-    except Exception as e:
-        logger.error(e)
-    finally:
-        # Close the connection for good meassure
-        client.close()
-        return response
+    def query_database(self, callbackQuery):
+        response = ""
+        try:
+            if callbackQuery["queryType"] == "find":
+                result = self.collection.find(callbackQuery["data"])
+                response = [object for object in result]
+            elif callbackQuery["queryType"] == "edit":
+                response = self.collection.edit(callbackQuery["data"])
+            elif callbackQuery["queryType"] == "delete":
+                response = self.collection.delete(callbackQuery["data"])
+            elif callbackQuery["queryType"] == "update_many":
+                response = self.collection.update_many(callbackQuery["data"])
+        except Exception as e:
+            logger.error(e)
+        finally:
+            # logger.error(response)
+            return response

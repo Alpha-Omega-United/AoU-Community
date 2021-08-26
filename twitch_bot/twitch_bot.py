@@ -20,6 +20,8 @@ from random import randint
 from .command_aliases import com_aliases
 from twitch_bot.extra.points import PointSystem
 from OAUTH.oauth import ALL_AUTH
+from aou_database.aou_database import AouDatabase
+
 
 CLIENT_ID = ALL_AUTH["CLIENT_ID"]
 CLIENT_SECRET = ALL_AUTH["CLIENT_SECRET"]
@@ -35,6 +37,7 @@ def time_now():
 
 class Bot(commands.Bot):
     def __init__(self):
+        self.aouDb = AouDatabase()
         self.restart_timer = None
         self.now = dt.datetime.now().strftime("%H%M%S")
         logger.info("STARTING: AoU Community bot")
@@ -44,7 +47,7 @@ class Bot(commands.Bot):
         self.load_channels_to_join()
         self.prefix = "!"
         self.ignore_commands = ["test"]
-        self.point_system = PointSystem()
+        self.point_system = PointSystem(self.aouDb)
         # Initialise our Bot with our access token, prefix and a list of channels to join on boot...
         super().__init__(token=TMI, prefix='!', initial_channels=self.CHANNELS)
 
@@ -82,32 +85,16 @@ class Bot(commands.Bot):
     # async def event_command_error(self, ctx, error):
     #     logger.error(f"event_command_error: Channel: {ctx.channel}; Command {error}")
 
-#! --------------------------------------------------------------------------------------- #
-#*                                    FILE HANDLER                                         #
-#! ------------------------------------ LOADING ------------------------------------------ #
-    def load_json(self, file_name):
-        with open(file_name) as file:
-            content = file.read()
-            self.JSON_BUFFER = json.loads(content)
-            self.MODERATORS = self.JSON_BUFFER["MODERATORS"]
-            return self.JSON_BUFFER
-
-#! ------------------------------------ SAVING ------------------------------------------- #
-    def save_json(self, file_name):
-        with open(file_name, "w") as file:
-            json.dump(self.JSON_BUFFER, file)
 
 # ! ------------------------------------ ON-LOAD ------------------------------------------- #
     def load_channels_to_join(self):
-        # //TODO HIT DB FOR LIST
-        # member_data = self.load_json(AOU_MEMBERS)
+        member_data = self.aouDb.collection.find({})
         members_channels = []
-        for (key, value) in member_data["users"].items():
-            members_channels.append(key)
+        for list_user in member_data:
+            members_channels.append(list_user["twitch_name"])
         self.CHANNELS = members_channels
+        self.CHANNELS.append("alphaomegaunited")
 
-    def load_bots_to_watch(self):
-        pass
 
 # ! --------------------------------------------------------------------------------------- #
 # *                                       COMMANDS                                          #

@@ -13,7 +13,7 @@ from threading import Thread
 from loguru import logger
 
 
-from aou_database.aou_database import query_database
+from aou_database.aou_database import AouDatabase
 from OAUTH.oauth import ALL_AUTH
 
 
@@ -22,24 +22,44 @@ ACCESS_TOKEN = ALL_AUTH["ACCESS_TOKEN"]
 
 #! CONSTS:
 POINT_AMOUNT_LURK = 10
-POINT_AMOUNT_HOST = 25
-POINT_AMOUNT_RAID = 50
-UPDATE_INTERVAL = 600
+# POINT_AMOUNT_HOST = 25
+# POINT_AMOUNT_RAID = 50
+UPDATE_INTERVAL = POINT_AMOUNT_LURK * 60
 MAX_CHANNEL_REWARDS = 2
 
 UPDATED_USERS = {"default": None}
 
+
 class PointSystem():
-    def __init__(self):
-        self.channel_list_to_check = []
-        self.json_buffer = {}
-        self.last_updated_chatters = int(time.time())
-        self.make_chatter_list()
+    def __init__(self, aouDb) -> None:
+        self.last_updated_chatters = int(self.update_last_updated())
+        self.aouDb = aouDb
+        self.channel_list_to_check = self.populate_channel_list()
+        self.currently_live = []
         self.point_system_thread = Thread(target=self.run, daemon=True)
         self.point_system_thread.start()
-        self.last_updated_chatters = self.json_buffer["last_updated_chatters"]
+        self.users_to_give_points = {}
+        self.ignorelist = ["alphaomegaunited"]
 
-    def run(self):
+    def update_last_updated(self) -> dict:
+        """handles loading last updated timestamp from cache.json"""
+        with open("twitch_bot/extra/cache/cache.json") as file:
+            content = json.loads(file.read())
+            return content["last_updated_chatters"]
+
+    def save_last_updated(self) -> None:
+        """handles saving last updated timestamp from cache.json"""
+        with open("twitch_bot/extra/cache/cache.json", "w") as file:
+            json.dump({"last_updated_chatters": self.last_updated_chatters}, file)
+
+    def populate_channel_list(self) -> list:
+        """Grabs all users from database and returns a list of only twitch_name's"""
+        response = self.aouDb.collection.find({})
+        result = [user["twitch_name"] for user in response]
+        return result
+
+    def run(self) -> None:
+        """handles timing of updateinterval and last updated timer"""
         logger.info("STARTING: Leaderboard Point System")
         time_to_next_update = abs(int(time.time()) - self.last_updated_chatters - UPDATE_INTERVAL)
         logger.warning(f"update in: {math.floor(time_to_next_update / 60)}:{time_to_next_update % 60}")
@@ -50,134 +70,91 @@ class PointSystem():
                 self.update()
                 time.sleep(UPDATE_INTERVAL)
 
-#! -------------------------------- FILE HANDLING --------------------------------------- #
-    def save_json(self):
-        with open("twitch_bot/data/aou_members.json", "w") as file:
-            json.dump(self.json_buffer, file)
+    def update(self) -> None:
+        """Triggers everything related to getting users and updating points."""
+        live_data = self.check_live()
+        self.currently_live = self.parse_live_users(live_data)
+        self.set_as_live_in_db(self.currently_live)
+        self.users_to_give_points = self.update_chatter(self.currently_live)
+        self.update_points(self.users_to_give_points)
+        self.save_last_updated()
 
-    def load_json(self):
-        with open("twitch_bot/data/aou_members.json") as file:
-            content = file.read()
-            self.json_buffer = json.loads(content)
-            return self.json_buffer
+    def check_live(self) -> list:
+        """check twitch if users in 'channel_list_to_check' are live."""
+        endpoint = "https://api.twitch.tv/helix/streams"
+        headers = {
+            "client-id": CLIENT_ID,
+            "Authorization": f"Bearer {ACCESS_TOKEN}"
+        }
+        user_query = "&user_login=" + "&user_login=".join(self.channel_list_to_check)
+        result = requests.get(endpoint + "?" + user_query, headers=headers)
+        result_json = result.json()
+        return result_json["data"]
 
-#! ------------------------------- USER MANAGEMENT -------------------------------------- #
-    def update(self):
-        UPDATED_USERS = {"default": None}
-        for index, channel in enumerate(self.channel_list_to_check):
-            viewers_on_channel = []
-            # if channel != "alphaomegaunited":
-            logger.info(f"checking channel #{index}/{len(self.channel_list_to_check)}: {channel}")
-            result = self.get_chatters_in_channel(channel)
-            for (key, value) in result["chatters"].items():
-                if key != "broadcaster":
-                    for viewer in value:
-                        if viewer in self.json_buffer["users"].keys() and viewer != "alphaomegaunited":
-                            if self.check_updated_user(viewer):
-                                viewers_on_channel.append(viewer)
-                                self.json_buffer = self.load_json()
-                                self.json_buffer["users"][viewer]["points"] += POINT_AMOUNT_LURK
-                            else:
-                                logger.warning(f"{viewer} already rewarded max")
-            if len(viewers_on_channel) > 0:
-                logger.debug(f"updated points on: {viewers_on_channel} in {channel}")
-        self.json_buffer["last_updated_chatters"] = int(time.time())
-        self.save_json()
-        logger.info(f"Saved file")
+    def set_as_live_in_db(self, user_list: list) -> None:
+        """takes a list of users, sets EVERY user to stream = None,
+        then sets currently live users stream data"""
+        #! this will fuck with youtube and other streamersites
+        #! currently supported sites: Twitch.tv
+        self.aouDb.collection.update_many({"stream": {"live_where": {"$ne": "youtube"}}}, {"$set": {"stream": None}})
+        logger.error(user_list)
+        for user in user_list:
+            self.aouDb.collection.update_one(
+                {"twitch_name": user},
+                {"$set": {
+                    "stream": {
+                        "live_url": f"https://twitch.tv/{user}",
+                        "live_where": "twitch"
+                            }
+                        }
+                    }
+            )
 
-    def make_chatter_list(self):
-        self.load_json()
-        self.channel_list_to_check = []
-        for (key, value) in self.json_buffer["users"].items():
-            self.channel_list_to_check.append(key)
+    def parse_live_users(self, data: list) -> list:
+        """receives data from twitch and parses data we want"""
+        temp_list = []
+        for user_object in data:
+            if user_object["user_login"] in self.channel_list_to_check:
+                temp_list.append(user_object["user_login"])
+        return temp_list
 
-#! ---------------------------------- TWITCH API ----------------------------------------- #
-    def get_chatters_in_channel(self, channel):
+    def update_chatter(self, live_users: list) -> dict:
+        """update chatter list of live members"""
+        temp_dict = {}
+        for user in live_users:
+            chatter_users = self.get_chatters_in_channel(user)
+            for user in chatter_users:
+                if user in temp_dict and user != "alphaomegaunited":
+                    if temp_dict[user]["count"] < MAX_CHANNEL_REWARDS:
+                        temp_dict[user]["count"] += 1
+                    else:
+                        continue
+                else:
+                    temp_dict[user] = {"count": 1}
+        return temp_dict
+
+    def get_chatters_in_channel(self, channel: str) -> list:
         endpoint = f"https://tmi.twitch.tv/group/user/{channel}/chatters"
         response = requests.get(endpoint)
         data = response.json()
-        return data
+        return self.parse_chatter_data(data["chatters"])
 
-    def check_stream_status(self, twitch_id: list):
-        endpoint = "https://api.twitch.tv/helix/streams/" + ",".join(twitch_id)
-        headers = {"Client-ID": CLIENT_ID}
-        params = {"stream_type": "live"}
-        response = requests.get(endpoint, headers=headers, params=params)
+    def parse_chatter_data(self, data: dict) -> list:
+        """gets lists of chatters from a channel and returns one list with all chatters"""
+        temp_list = []
+        for user in data["vips"]:
+            temp_list.append(user)
+        for user in data["moderators"]:
+            temp_list.append(user)
+        for user in data["viewers"]:
+            temp_list.append(user)
+        return temp_list
 
-
-    def check_updated_user(self, user):
-        """checks if user has already been updated max number of times,
-        if returns True, means user has not passed limit
-        if returns False, means user has passed limit"""
-        if user.lower() not in UPDATED_USERS.keys():
-            UPDATED_USERS[user] = 1
-        else:
-            for (key, value) in UPDATED_USERS.items():
-                if key.lower() == user.lower():
-                    if value == MAX_CHANNEL_REWARDS:
-                        return False
-                    else:
-                        UPDATED_USERS[key] = value + 1
-        return True
-
-# database handler
-
-
-# def editOne():
-#     #need id
-#     pass
-
-# def deleteOne():
-#     pass
-# def deleteMany():
-#     pass
-# ADD
-# insertOne
-# EDIT
-# updateOne
-# DELETE
-# deleteOne
-# QUERYONE
-# findOne
-# QUERYMANY
-# findMany
-# QUERYGETALL
-# find
-# a = {
-# 	'_links': {
-# 	},
-# 	'chatter_count': 18,
-# 	'chatters': {
-# 		'broadcaster': [
-# 			'calviz_gaming'
-# 		],
-# 		'vips': [
-# 			'deliriouszendera',
-# 			'nexxerd'
-# 		],
-# 		'moderators': [
-# 			'nightbot',
-# 			'streamelements'
-# 		],
-# 		'staff': [
-# 		],
-# 		'admins': [
-# 		],
-# 		'global_mods': [
-# 		],
-# 		'viewers': [
-# 			'2020',
-# 			'academyimpossible',
-# 			'alphaomegaunited',
-# 			'ankaplaysgames',
-# 			'anotherttvviewer',
-# 			'calviz_root',
-# 			'commanderroot',
-# 			'dcserverforsmallstreamers',
-# 			'irishvikingr',
-# 			'luffydstream',
-# 			'mslenity',
-# 			'sniperxpgamer',
-# 			'stormpostor'
-# 		]
-# 	}
+    def update_points(self, users_to_update: dict) -> None:
+        """updates points on chatters in channel"""
+        cursor = self.aouDb.collection.find()
+        for doc in enumerate(cursor):
+            if doc[1]["twitch_name"] in users_to_update:
+                user_to_update = doc[1]["twitch_name"]
+                points_to_update = users_to_update[doc[1]["twitch_name"]]["count"] * POINT_AMOUNT_LURK
+                self.aouDb.collection.update_one({"twitch_name": user_to_update}, { "$inc" :{"points": points_to_update}})
