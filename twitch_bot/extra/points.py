@@ -21,14 +21,13 @@ CLIENT_ID = ALL_AUTH["CLIENT_ID"]
 ACCESS_TOKEN = ALL_AUTH["ACCESS_TOKEN"]
 
 #! CONSTS:
-POINT_AMOUNT_LURK = 10
+POINT_AMOUNT_LURK = 5 #! every x minutes
 # POINT_AMOUNT_HOST = 25
 # POINT_AMOUNT_RAID = 50
 UPDATE_INTERVAL = POINT_AMOUNT_LURK * 60
 MAX_CHANNEL_REWARDS = 2
 
 UPDATED_USERS = {"default": None}
-
 
 class PointSystem():
     def __init__(self, aouDb) -> None:
@@ -81,9 +80,7 @@ class PointSystem():
         self.set_as_live_in_db(self.currently_live)
         self.users_to_give_points = self.update_chatter(self.currently_live)
         self.update_points(self.users_to_give_points)
-        #* !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        #! self.save_last_updated()
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        self.save_last_updated()
 
     def check_live(self) -> list:
         """check twitch if users in 'channel_list_to_check' are live."""
