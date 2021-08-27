@@ -40,6 +40,7 @@ class PointSystem():
         self.point_system_thread.start()
         self.users_to_give_points = {}
         self.ignorelist = ["alphaomegaunited"]
+        self.not_supported_sites = ["youtube", "trovo"]
 
     def update_last_updated(self) -> dict:
         """handles loading last updated timestamp from cache.json"""
@@ -50,7 +51,8 @@ class PointSystem():
     def save_last_updated(self) -> None:
         """handles saving last updated timestamp from cache.json"""
         with open("twitch_bot/extra/cache/cache.json", "w") as file:
-            json.dump({"last_updated_chatters": self.last_updated_chatters}, file)
+            json.dump(
+                {"last_updated_chatters": self.last_updated_chatters}, file)
 
     def populate_channel_list(self) -> list:
         """Grabs all users from database and returns a list of only twitch_name's"""
@@ -61,8 +63,10 @@ class PointSystem():
     def run(self) -> None:
         """handles timing of updateinterval and last updated timer"""
         logger.info("STARTING: Leaderboard Point System")
-        time_to_next_update = abs(int(time.time()) - self.last_updated_chatters - UPDATE_INTERVAL)
-        logger.warning(f"update in: {math.floor(time_to_next_update / 60)}:{time_to_next_update % 60}")
+        time_to_next_update = abs(
+            int(time.time()) - self.last_updated_chatters - UPDATE_INTERVAL)
+        logger.warning(
+            f"update in: {math.floor(time_to_next_update / 60)}:{time_to_next_update % 60}")
         while True:
             if abs(int(time.time()) - self.last_updated_chatters) >= UPDATE_INTERVAL:
                 logger.info("Updating Point System")
@@ -77,7 +81,9 @@ class PointSystem():
         self.set_as_live_in_db(self.currently_live)
         self.users_to_give_points = self.update_chatter(self.currently_live)
         self.update_points(self.users_to_give_points)
-        self.save_last_updated()
+        #* !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        #! self.save_last_updated()
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     def check_live(self) -> list:
         """check twitch if users in 'channel_list_to_check' are live."""
@@ -86,7 +92,8 @@ class PointSystem():
             "client-id": CLIENT_ID,
             "Authorization": f"Bearer {ACCESS_TOKEN}"
         }
-        user_query = "&user_login=" + "&user_login=".join(self.channel_list_to_check)
+        user_query = "&user_login=" + \
+            "&user_login=".join(self.channel_list_to_check)
         result = requests.get(endpoint + "?" + user_query, headers=headers)
         result_json = result.json()
         return result_json["data"]
@@ -96,19 +103,21 @@ class PointSystem():
         then sets currently live users stream data"""
         #! this will fuck with youtube and other streamersites
         #! currently supported sites: Twitch.tv
-        self.aouDb.collection.update_many({"stream": {"live_where": {"$ne": "youtube"}}}, {"$set": {"stream": None}})
-        logger.error(user_list)
+        self.aouDb.collection.update_many(
+            # {"stream": {"live_where": {"$ne": "youtube"}}},
+            {},
+            {"$set": {"stream": None}}
+        )
+        logger.error(f"live now:{user_list}")
         for user in user_list:
-            self.aouDb.collection.update_one(
+            result = self.aouDb.collection.update_one(
                 {"twitch_name": user},
-                {"$set": {
-                    "stream": {
+                {"$set": {"stream": {
                         "live_url": f"https://twitch.tv/{user}",
-                        "live_where": "twitch"
-                            }
-                        }
-                    }
+                        "live_where": "twitch"}}}
             )
+
+            logger.debug(result.modified_count)
 
     def parse_live_users(self, data: list) -> list:
         """receives data from twitch and parses data we want"""
@@ -156,5 +165,7 @@ class PointSystem():
         for doc in enumerate(cursor):
             if doc[1]["twitch_name"] in users_to_update:
                 user_to_update = doc[1]["twitch_name"]
-                points_to_update = users_to_update[doc[1]["twitch_name"]]["count"] * POINT_AMOUNT_LURK
-                self.aouDb.collection.update_one({"twitch_name": user_to_update}, { "$inc" :{"points": points_to_update}})
+                points_to_update = users_to_update[doc[1]
+                                                   ["twitch_name"]]["count"] * POINT_AMOUNT_LURK
+                self.aouDb.collection.update_one({"twitch_name": user_to_update}, {
+                                                 "$inc": {"points": points_to_update}})
