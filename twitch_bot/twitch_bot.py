@@ -107,11 +107,11 @@ class Bot(commands.Bot):
     @commands.command(aliases=com_aliases["aou_discord_aliases"])
     async def aou_discord(self, ctx: commands.Context):
         # if ctx.author.name in self.CHANNELS:
-        await ctx.send(""" Alpha Omega United is a Twitch/Discord Community.
+        await ctx.send("""Alpha Omega United is a Twitch/Discord Community.
         We have community nights, game nights, tournaments and have some cool extra
         features to come in the near future, wether you are a gamer, streamer or
         anywhere in between this is a great place to meet likeminded people and
-        share some LUL 's :D Discord: https://discord.gg/P5qnher4kV """)
+        share some LUL 's :D Discord: https://discord.gg/P5qnher4kV - Website: https://alpha-omega-united.github.io/""")
 
     @commands.command(aliases=com_aliases["signup_aliases"])
     async def signup(self, ctx: commands.Context):

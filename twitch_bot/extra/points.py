@@ -105,7 +105,9 @@ class PointSystem():
             {},
             {"$set": {"stream": None}}
         )
-        logger.error(f"live now:{user_list}")
+        if len(user_list) == 0:
+            user_list = 0
+        logger.error(f"live now: {user_list}")
         for user in user_list:
             result = self.aouDb.collection.update_one(
                 {"twitch_name": user},
