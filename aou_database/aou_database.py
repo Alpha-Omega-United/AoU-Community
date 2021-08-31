@@ -16,7 +16,8 @@ MONGO_DB_COLLECTION = ALL_AUTH["MONGO_DB_COLLECTION"]
 
 class AouDatabase():
     def __init__(self) -> None:
-        logger.info("AoUDatabase: INIT")
+        logger.info("STARTING: AoUDatabase")
+
         self.client = MongoClient(MONGO_DB_CONNECTION_URL)
         self.db = self.client[MONGO_DB_NAME]
         self.collection = self.db[MONGO_DB_COLLECTION]

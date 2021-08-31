@@ -37,10 +37,10 @@ def time_now():
 
 class Bot(commands.Bot):
     def __init__(self):
+        logger.info("STARTING: AoU Community bot")
         self.aouDb = AouDatabase()
         self.restart_timer = None
         self.now = dt.datetime.now().strftime("%H%M%S")
-        logger.info("STARTING: AoU Community bot")
         self.JSON_BUFFER = {}
         self.CHANNELS = []
         self.MODERATORS = []
@@ -87,6 +87,7 @@ class Bot(commands.Bot):
 
 
 # ! ------------------------------------ ON-LOAD ------------------------------------------- #
+
     def load_channels_to_join(self):
         member_data = self.aouDb.collection.find({})
         members_channels = []
@@ -100,6 +101,7 @@ class Bot(commands.Bot):
 # ! --------------------------------------------------------------------------------------- #
 # *                                       COMMANDS                                          #
 # ! ------------------------------------ REGULAR ------------------------------------------ #
+
     @commands.command(aliases=com_aliases["test_aliases"])
     async def test(self, ctx: commands.Context):
         # if ctx.author.name in self.CHANNELS:
@@ -117,41 +119,43 @@ class Bot(commands.Bot):
     @commands.command(aliases=com_aliases["signup_aliases"])
     async def signup(self, ctx: commands.Context):
         user = ctx.author.name
-        if not self.check_if_user_in_buffer(user):
-            logger.debug(f"{user} to add")
-            self.add_user_to_buffer_and_save(user)
-            await ctx.send(f"{user}, Added to Watchlist, if you have custom bot name, type !bot followed by the name of your bot, example: !bot AoU_bot")
-            await self.restart_bot()
-        else:
-            await ctx.send(f"{user}, Already in watchlist, did you want to register your bot instead? type !bot followed by the name of your bot, example: !bot AoU_bot")
-        await ctx.send(f"{user}, It may take up to 30minutes before the bot joins your channel.")
+        #! TODO make use DB
+        # if not self.check_if_user_in_buffer(user):
+        #     logger.debug(f"{user} to add")
+        #     self.add_user_to_buffer_and_save(user)
+        #     await ctx.send(f"{user}, Added to Watchlist, if you have custom bot name, type !bot followed by the name of your bot, example: !bot AoU_bot")
+        #     await self.restart_bot()
+        # else:
+        #     await ctx.send(f"{user}, Already in watchlist, did you want to register your bot instead? type !bot followed by the name of your bot, example: !bot AoU_bot")
+        # await ctx.send(f"{user}, It may take up to 30minutes before the bot joins your channel.")
+        await ctx.send(f"{user}, some small changes are being done, please use the discord to sign up with '/twitch register <username>' in Discord: https://discord.gg/P5qnher4kV")
 
-    @commands.command(aliases=com_aliases["bot_aliases"])
-    async def bot(self, ctx: commands.Context):
-        if "!bots" in ctx.content:
-            bots = ", ".join(self.JSON_BUFFER["bots"])
-            await ctx.send(f"You have registered these bots: {bots}")
-            return
-        user = ctx.author.name
-        bot = ctx.content.split(" ")[1]
-        if self.check_if_bot_in_buffer(user, bot):
-            await ctx.send(f"{bot} Already added, you can add more bots if you have multiple, just repeat the command again, do '!bots' to see all the bots you have registered")
-        else:
-            self.add_bot_to_buffer_and_save(ctx.author.name, bot)
-            await ctx.send(f"{bot} Successfully added, you can add more bots if you have multiple, just repeat the command again, do '!bots' to see all the bots you have registered")
+    # @commands.command(aliases=com_aliases["bot_aliases"])
+    # async def bot(self, ctx: commands.Context):
+    #     if "!bots" in ctx.content:
+    #         bots = ", ".join(self.JSON_BUFFER["bots"])
+    #         await ctx.send(f"You have registered these bots: {bots}")
+    #         return
+    #     user = ctx.author.name
+    #     bot = ctx.content.split(" ")[1]
+    #     if self.check_if_bot_in_buffer(user, bot):
+    #         await ctx.send(f"{bot} Already added, you can add more bots if you have multiple, just repeat the command again, do '!bots' to see all the bots you have registered")
+    #     else:
+    #         self.add_bot_to_buffer_and_save(ctx.author.name, bot)
+    #         await ctx.send(f"{bot} Successfully added, you can add more bots if you have multiple, just repeat the command again, do '!bots' to see all the bots you have registered")
 
-    @commands.command(aliases=com_aliases["remove_aliases"])
-    async def remove(self, ctx: commands.Context):
-        if ctx.author.name in self.MODERATORS:
-            user_to_remove = ctx.content.split(" ")[1]
-            removed_user = self.JSON_BUFFER["users"].pop(user_to_remove, None)
-            if removed_user is None:
-                user_to_remove = removed_user
-            await ctx.send(f"{user_to_remove} was removed from the watchlist")
-            # //TODO SOMETNiHG
-            # self.save_json(AOU_MEMBERS)
-        else:
-            await ctx.send("You dont have permission to do that, contact a moderator on discord")
+    # @commands.command(aliases=com_aliases["remove_aliases"])
+    # async def remove(self, ctx: commands.Context):
+    #     if ctx.author.name in self.MODERATORS:
+    #         user_to_remove = ctx.content.split(" ")[1]
+    #         removed_user = self.JSON_BUFFER["users"].pop(user_to_remove, None)
+    #         if removed_user is None:
+    #             user_to_remove = removed_user
+    #         await ctx.send(f"{user_to_remove} was removed from the watchlist")
+    #         # //TODO SOMETNiHG
+    #         # self.save_json(AOU_MEMBERS)
+    #     else:
+    #         await ctx.send("You dont have permission to do that, contact a moderator on discord")
 
     @commands.command(aliases=com_aliases["restart_aliases"])
     async def restart(self, ctx: commands.Context):
@@ -165,7 +169,8 @@ class Bot(commands.Bot):
         """grabs all commands from the magic carpet
         and sends a msg with a formatted string"""
         command_names = [command for command in self.commands]
-        add_prefix = [f"{self.prefix}{word}, " for word in command_names if word not in self.ignore_commands]
+        add_prefix = [
+            f"{self.prefix}{word}, " for word in command_names if word not in self.ignore_commands]
         message = ""
         for command in add_prefix:
             message += command

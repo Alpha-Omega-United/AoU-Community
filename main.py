@@ -20,8 +20,7 @@ from threading import Thread
 from decouple import config
 
 from twitch_bot.twitch_bot import Bot as TwitchBotImport
-# from discord_bot.discord_bot import Bot as DiscordBotImport
-
+from heroku_pinger.heroku_pinger import HerokuPinger
 
 AOU_API = "http://192.168.31.54:8888/api"
 
@@ -56,22 +55,27 @@ def time_now():
     return int(dt.datetime.now().strftime("%H%M%S"))
 
 
-
 #! --------------------------------------------------------------------------------------- #
 #*                                    THREADING                                            #
 #! ----------------------------------- SOMETHING ----------------------------------------- #
 class TwitchBot():
     def __init__(self):
+        """[summary]
+        """
         self.twitch_bot_module = TwitchBotImport()
-        self.twitch_bot_process = multiprocessing.Process(target=self.twitch_bot_module.run, daemon=True)
+        self.twitch_bot_process = multiprocessing.Process(
+            target=self.twitch_bot_module.run, daemon=True)
         self.start_twitch_bot()
 
     def start_twitch_bot(self):
+        """[summary]
+        """
         if self.twitch_bot_process.is_alive():
             logger.error("is alive")
             logger.error(self.twitch_bot_process)
             self.twitch_bot_process.terminate()
-        self.twitch_bot_process = multiprocessing.Process(target=self.twitch_bot_module.run, daemon=True)
+        self.twitch_bot_process = multiprocessing.Process(
+            target=self.twitch_bot_module.run, daemon=True)
         logger.info("STARTING: Bot Thread")
         self.twitch_bot_process.start()
 
@@ -180,8 +184,9 @@ def check_password(request):
 
 
 if __name__ == '__main__':
-    logger.info("STARTING: Threaded Modules")
+    logger.info("STARTING: main.py")
     twitch_bot = TwitchBot()
-    # discord_bot = DiscordBot()
+    heroku_pinger = HerokuPinger()
+    heroku_pinger.start()
     logger.info("STARTING: API server Loop")
     app.run(host="0.0.0.0", port="8888")
