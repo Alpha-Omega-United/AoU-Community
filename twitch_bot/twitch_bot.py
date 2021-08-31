@@ -94,6 +94,7 @@ class Bot(commands.Bot):
             members_channels.append(list_user["twitch_name"])
         self.CHANNELS = members_channels
         self.CHANNELS.append("alphaomegaunited")
+        logger.warning(f"joined {len(self.CHANNELS)} channels")
 
 
 # ! --------------------------------------------------------------------------------------- #

@@ -31,7 +31,10 @@ UPDATED_USERS = {"default": None}
 
 class PointSystem():
     def __init__(self, aouDb) -> None:
-        self.last_updated_chatters = int(self.update_last_updated())
+        self.json_buffer = self.load_json()
+        self.last_updated_chatters = int(self.json_buffer["last_updated_chatters"])
+        self.number_of_registered_members = int(self.json_buffer["number_of_registered_members"])
+        logger.warning(f"there are {self.number_of_registered_members} registered members")
         self.aouDb = aouDb
         self.channel_list_to_check = self.populate_channel_list()
         self.currently_live = []
@@ -41,17 +44,20 @@ class PointSystem():
         self.ignorelist = ["alphaomegaunited"]
         self.not_supported_sites = ["youtube", "trovo"]
 
-    def update_last_updated(self) -> dict:
+    def load_json(self) -> dict:
         """handles loading last updated timestamp from cache.json"""
         with open("twitch_bot/extra/cache/cache.json") as file:
             content = json.loads(file.read())
-            return content["last_updated_chatters"]
+            return content
 
-    def save_last_updated(self) -> None:
+    def save_json(self, reset_last_updated=False) -> None:
         """handles saving last updated timestamp from cache.json"""
+        data_to_save = {"last_updated_chatters": self.last_updated_chatters,
+                        "number_of_registered_members": len(self.channel_list_to_check)}
+        if reset_last_updated:
+            data_to_save["last_updated_chatters"] = 0
         with open("twitch_bot/extra/cache/cache.json", "w") as file:
-            json.dump(
-                {"last_updated_chatters": self.last_updated_chatters}, file)
+            json.dump(data_to_save, file)
 
     def populate_channel_list(self) -> list:
         """Grabs all users from database and returns a list of only twitch_name's"""
@@ -75,12 +81,32 @@ class PointSystem():
 
     def update(self) -> None:
         """Triggers everything related to getting users and updating points."""
+        self.channel_list_to_check = self.populate_channel_list()
+        if len(self.channel_list_to_check) != self.number_of_registered_members:
+            self.save_json(True)
+            self.restart_bot()
+            #!REstart
+            pass
         live_data = self.check_live()
         self.currently_live = self.parse_live_users(live_data)
         self.set_as_live_in_db(self.currently_live)
         self.users_to_give_points = self.update_chatter(self.currently_live)
         self.update_points(self.users_to_give_points)
-        self.save_last_updated()
+        self.save_json()
+
+    def restart_bot(self):
+
+        logger.warning(f"registered members: {self.number_of_registered_members} ")
+        logger.warning(f"channels joined: {len(self.channel_list_to_check)}")
+        logger.warning("Restarting bot in 30sec to update channel-list")
+        from time import sleep
+        sleep(30)
+        AOU_API = "http://192.168.31.54:8888/api"
+        endpoint = f"{AOU_API}/bot_get/restart_bot"
+        logger.warning("RESTARTING NOW")
+        response = requests.get(endpoint, headers={"password": "123"})
+        logger.debug(response.text)
+
 
     def check_live(self) -> list:
         """check twitch if users in 'channel_list_to_check' are live."""
@@ -100,23 +126,28 @@ class PointSystem():
         then sets currently live users stream data"""
         #! this will fuck with youtube and other streamersites
         #! currently supported sites: Twitch.tv
-        self.aouDb.collection.update_many(
-            # {"stream": {"live_where": {"$ne": "youtube"}}},
-            {},
+        result = self.aouDb.collection.update_many(
+            {"stream.live_where": "twitch"},
+            # {},
             {"$set": {"stream": None}}
         )
+        logger.warning(f"live now: {user_list}")
         if len(user_list) == 0:
             user_list = 0
-        logger.error(f"live now: {user_list}")
-        for user in user_list:
-            result = self.aouDb.collection.update_one(
-                {"twitch_name": user},
-                {"$set": {"stream": {
-                        "live_url": f"https://twitch.tv/{user}",
-                        "live_where": "twitch"}}}
-            )
-
-            logger.debug(result.modified_count)
+        else:
+            for user in user_list:
+                logger.error(user)
+                result = self.aouDb.collection.update_one(
+                    {"twitch_name": user},
+                    {"$set": {"stream": {
+                            "live_url": f"https://twitch.tv/{user}",
+                            "live_where": "twitch"}}}
+                )
+                if int(result.modified_count) == 1:
+                    logger.debug(f"set as live: {user}")
+                else:
+                    logger.debug("no user changed")
+                    logger.warning(f"something may have gone wrong")
 
     def parse_live_users(self, data: list) -> list:
         """receives data from twitch and parses data we want"""
@@ -162,9 +193,13 @@ class PointSystem():
         """updates points on chatters in channel"""
         cursor = self.aouDb.collection.find()
         for doc in enumerate(cursor):
-            if doc[1]["twitch_name"] in users_to_update:
-                user_to_update = doc[1]["twitch_name"]
-                points_to_update = users_to_update[doc[1]
-                                                   ["twitch_name"]]["count"] * POINT_AMOUNT_LURK
-                self.aouDb.collection.update_one({"twitch_name": user_to_update}, {
-                                                 "$inc": {"points": points_to_update}})
+            user_to_update = doc[1]["twitch_name"].lower()
+            if user_to_update in users_to_update:
+                points_to_update = users_to_update[user_to_update]["count"] * POINT_AMOUNT_LURK
+                result = self.aouDb.collection.update_one(
+                    {"twitch_name": user_to_update},
+                    {"$inc": {"points": points_to_update}})
+                if result.matched_count == 1:
+                    logger.debug(f"{user_to_update} was given {points_to_update}points")
+                else:
+                    logger.warning(f"something might have gone wrong when giving {points_to_update}points to {user_to_update}")

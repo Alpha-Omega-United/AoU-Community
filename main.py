@@ -75,11 +75,11 @@ class TwitchBot():
         logger.info("STARTING: Bot Thread")
         self.twitch_bot_process.start()
 
-    def restart_twitch_bot(self):
-        logger.warning("KILLING: Bot Thread")
-        self.twitch_bot_process.terminate()
-        logger.info("Bot Thread Re-Starting")
-        self.start_bot()
+    # def restart_twitch_bot(self):
+    #     logger.warning("KILLING: Bot Thread")
+    #     self.twitch_bot_process.terminate()
+    #     logger.info("Bot Thread Re-Starting")
+    #     self.start_bot()
 
 
 #! --------------------------------------------------------------------------------------- #
