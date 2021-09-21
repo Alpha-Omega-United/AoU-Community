@@ -18,10 +18,14 @@ from OAUTH.oauth import ALL_AUTH
 
 
 CLIENT_ID = ALL_AUTH["CLIENT_ID"]
-ACCESS_TOKEN = ALL_AUTH["ACCESS_TOKEN"]
+APP_ACCESS_TOKEN = ALL_AUTH["APP_ACCESS_TOKEN"]
+CLIENT_ID = ALL_AUTH["CLIENT_ID"]
+CLIENT_SECRET = ALL_AUTH["CLIENT_SECRET"]
+APP_ACCESS_TOKEN_ENDPOINT = ALL_AUTH["APP_ACCESS_TOKEN_ENDPOINT"]
+
 
 #! CONSTS:
-POINT_AMOUNT_LURK = 5 #! every x minutes
+POINT_AMOUNT_LURK = 5  # ! every x minutes
 # POINT_AMOUNT_HOST = 25
 # POINT_AMOUNT_RAID = 50
 UPDATE_INTERVAL = POINT_AMOUNT_LURK * 60
@@ -29,12 +33,18 @@ MAX_CHANNEL_REWARDS = 2
 
 UPDATED_USERS = {"default": None}
 
-class PointSystem():
+
+class PointSystem:
     def __init__(self, aouDb) -> None:
         self.json_buffer = self.load_json()
-        self.last_updated_chatters = int(self.json_buffer["last_updated_chatters"])
-        self.number_of_registered_members = int(self.json_buffer["number_of_registered_members"])
-        logger.warning(f"there are {self.number_of_registered_members} registered members")
+        self.last_updated_chatters = int(
+            self.json_buffer["last_updated_chatters"])
+        self.number_of_registered_members = int(
+            self.json_buffer["number_of_registered_members"]
+        )
+        logger.warning(
+            f"there are {self.number_of_registered_members} registered members"
+        )
         self.aouDb = aouDb
         self.channel_list_to_check = self.populate_channel_list()
         self.currently_live = []
@@ -43,6 +53,16 @@ class PointSystem():
         self.users_to_give_points = {}
         self.ignorelist = ["alphaomegaunited"]
         self.not_supported_sites = ["youtube", "trovo"]
+        # self.get_app_access_token()
+
+    def get_app_access_token(self):
+        params = {
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET,
+            "grant_type": "client_credentials"
+        }
+        response = requests.post(APP_ACCESS_TOKEN_ENDPOINT, params=params)
+        # logger.debug(f'response: {response.json()} ')
 
     def load_json(self) -> dict:
         """handles loading last updated timestamp from cache.json"""
@@ -52,8 +72,10 @@ class PointSystem():
 
     def save_json(self, reset_last_updated=False) -> None:
         """handles saving last updated timestamp from cache.json"""
-        data_to_save = {"last_updated_chatters": self.last_updated_chatters,
-                        "number_of_registered_members": len(self.channel_list_to_check)}
+        data_to_save = {
+            "last_updated_chatters": self.last_updated_chatters,
+            "number_of_registered_members": len(self.channel_list_to_check),
+        }
         if reset_last_updated:
             data_to_save["last_updated_chatters"] = 0
         with open("twitch_bot/extra/cache/cache.json", "w") as file:
@@ -69,9 +91,11 @@ class PointSystem():
         """handles timing of updateinterval and last updated timer"""
         logger.info("STARTING: Leaderboard Point System")
         time_to_next_update = abs(
-            int(time.time()) - self.last_updated_chatters - UPDATE_INTERVAL)
+            int(time.time()) - self.last_updated_chatters - UPDATE_INTERVAL
+        )
         logger.warning(
-            f"update in: {math.floor(time_to_next_update / 60)}:{time_to_next_update % 60}")
+            f"update in: {math.floor(time_to_next_update / 60)}:{time_to_next_update % 60}"
+        )
         while True:
             if abs(int(time.time()) - self.last_updated_chatters) >= UPDATE_INTERVAL:
                 logger.info("Updating Point System")
@@ -88,6 +112,9 @@ class PointSystem():
             #!REstart
             pass
         live_data = self.check_live()
+        if "error" in live_data[0].keys():
+            logger.error("SOMETHING WENT WRONG RESTARTING")
+            self.restart_bot()
         self.currently_live = self.parse_live_users(live_data)
         self.set_as_live_in_db(self.currently_live)
         self.users_to_give_points = self.update_chatter(self.currently_live)
@@ -95,11 +122,12 @@ class PointSystem():
         self.save_json()
 
     def restart_bot(self):
-
-        logger.warning(f"registered members: {self.number_of_registered_members} ")
+        logger.warning(
+            f"registered members: {self.number_of_registered_members} ")
         logger.warning(f"channels joined: {len(self.channel_list_to_check)}")
         logger.warning("Restarting bot in 30sec to update channel-list")
         from time import sleep
+
         sleep(30)
         AOU_API = "http://192.168.31.54:8888/api"
         endpoint = f"{AOU_API}/bot_get/restart_bot"
@@ -107,18 +135,18 @@ class PointSystem():
         response = requests.get(endpoint, headers={"password": "123"})
         logger.debug(response.text)
 
-
     def check_live(self) -> list:
         """check twitch if users in 'channel_list_to_check' are live."""
         endpoint = "https://api.twitch.tv/helix/streams"
-        headers = {
-            "client-id": CLIENT_ID,
-            "Authorization": f"Bearer {ACCESS_TOKEN}"
-        }
+        headers = {"client-id": CLIENT_ID,
+                   "Authorization": f"Bearer {APP_ACCESS_TOKEN}"}
         user_query = "&user_login=" + \
             "&user_login=".join(self.channel_list_to_check)
         result = requests.get(endpoint + "?" + user_query, headers=headers)
         result_json = result.json()
+        if "error" in result_json.keys():
+            logger.error(f"result_json: {result_json} ")
+            return [{"error": True}]
         return result_json["data"]
 
     def set_as_live_in_db(self, user_list: list) -> None:
@@ -129,7 +157,7 @@ class PointSystem():
         result = self.aouDb.collection.update_many(
             {"stream.live_where": "twitch"},
             # {},
-            {"$set": {"stream": None}}
+            {"$set": {"stream": None}},
         )
         logger.warning(f"live now: {user_list}")
         if len(user_list) == 0:
@@ -139,9 +167,14 @@ class PointSystem():
                 logger.error(user)
                 result = self.aouDb.collection.update_one(
                     {"twitch_name": user},
-                    {"$set": {"stream": {
-                            "live_url": f"https://twitch.tv/{user}",
-                            "live_where": "twitch"}}}
+                    {
+                        "$set": {
+                            "stream": {
+                                "live_url": f"https://twitch.tv/{user}",
+                                "live_where": "twitch",
+                            }
+                        }
+                    },
                 )
                 if int(result.modified_count) == 1:
                     logger.debug(f"set as live: {user}")
@@ -195,11 +228,18 @@ class PointSystem():
         for doc in enumerate(cursor):
             user_to_update = doc[1]["twitch_name"].lower()
             if user_to_update in users_to_update:
-                points_to_update = users_to_update[user_to_update]["count"] * POINT_AMOUNT_LURK
+                points_to_update = (
+                    users_to_update[user_to_update]["count"] *
+                    POINT_AMOUNT_LURK
+                )
                 result = self.aouDb.collection.update_one(
                     {"twitch_name": user_to_update},
-                    {"$inc": {"points": points_to_update}})
+                    {"$inc": {"points": points_to_update}},
+                )
                 if result.matched_count == 1:
-                    logger.debug(f"{user_to_update} was given {points_to_update}points")
+                    logger.debug(
+                        f"{user_to_update} was given {points_to_update}points")
                 else:
-                    logger.warning(f"something might have gone wrong when giving {points_to_update}points to {user_to_update}")
+                    logger.warning(
+                        f"something might have gone wrong when giving {points_to_update}points to {user_to_update}"
+                    )
